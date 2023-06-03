@@ -4,7 +4,7 @@ metadata:
   name: postgres-admin
 type: Opaque
 data:
-  url: "postgres://{{POSTGRES_USERNAME}}:{{POSTGRES_PASSWORD}}@{{POSTGRES_HOSTNAME}}/{{POSTGRES_DATABASE}}"
+  url: "{{POSTGRES_URL}}"
   hostname: "{{POSTGRES_HOSTNAME}}"
   database: "{{POSTGRES_DATABASE}}"
   username: "{{POSTGRES_USERNAME}}"
