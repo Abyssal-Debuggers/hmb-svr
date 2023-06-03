@@ -45,14 +45,14 @@ jobs:
             sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svr:${{ inputs.version }}/' ./.k8s/deploy.yml
           fi
           
-          POSTGRES_URL=$(echo 'postgres://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOSTNAME }}/${{ vars.POSTGRES_DATABASE }}' | base64)
-          POSTGRES_HOSTNAME=$(echo '${{ vars.POSTGRES_HOSTNAME }}' | base64)
-          POSTGRES_DATABASE=$(echo '${{ vars.POSTGRES_DATABASE }}' | base64 )
-          POSTGRES_USERNAME=$(echo '${{ secrets.POSTGRES_USERNAME }}' | base64)
-          POSTGRES_PASSWORD=$(echo '${{ secrets.POSTGRES_PASSWORD }}' | base64)
+          POSTGRES_URL=$(echo -n 'postgres://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOSTNAME }}/${{ vars.POSTGRES_DATABASE }}' | base64)
+          POSTGRES_HOSTNAME=$(echo -n '${{ vars.POSTGRES_HOSTNAME }}' | base64)
+          POSTGRES_DATABASE=$(echo -n '${{ vars.POSTGRES_DATABASE }}' | base64)
+          POSTGRES_USERNAME=$(echo -n '${{ secrets.POSTGRES_USERNAME }}' | base64)
+          POSTGRES_PASSWORD=$(echo -n '${{ secrets.POSTGRES_PASSWORD }}' | base64)
           
-          KEYCLOAK_ADMIN_USERNAME=$(echo '${{ secrets.KEYCLOAK_ADMIN_USERNAME }}' | base64)
-          KEYCLOAK_ADMIN_PASSWORD=$(echo '${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}' | base64)
+          KEYCLOAK_ADMIN_USERNAME=$(echo -n '${{ secrets.KEYCLOAK_ADMIN_USERNAME }}' | base64)
+          KEYCLOAK_ADMIN_PASSWORD=$(echo -n '${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}' | base64)
           
           sed -i "s/{{POSTGRES_URL}}/$POSTGRES_URL/" ./.k8s/deploy.yml
           sed -i "s/{{POSTGRES_HOSTNAME}}/$POSTGRES_HOSTNAME/" ./.k8s/deploy.yml
