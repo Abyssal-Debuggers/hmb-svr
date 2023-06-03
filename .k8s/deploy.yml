@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-admin
+type: Opaque
+data:
+  url: "postgres://{{POSTGRES_USERNAME}}:{{POSTGRES_PASSWORD}}@{{POSTGRES_HOSTNAME}}/{{POSTGRES_DATABASE}}"
+  hostname: "{{POSTGRES_HOSTNAME}}"
+  database: "{{POSTGRES_DATABASE}}"
+  username: "{{POSTGRES_USERNAME}}"
+  password: "{{POSTGRES_PASSWORD}}"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,11 +25,13 @@ spec:
     spec:
       containers:
         - name: hmb-svr
-
           image: "{{IMAGE}}"
           env:
             - name: DATABASE_OPTION
-              value: "postgres://postgres:{{DB_PASSWORD}}@hmb-db/postgres"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: url
             - name: SERVER_PORT
               value: "80"
           resources:
@@ -72,3 +86,94 @@ spec:
                 name: hmb-svr
                 port:
                   number: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-admin
+type: Opaque
+data:
+  username: "{{KEYCLOAK_ADMIN_USERNAME}}"
+  password: "{{KEYCLOAK_ADMIN_PASSWORD}}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: bitnami/keycloak:21.1.1
+          args: [ "start-dev" ]
+          env:
+            - name: KEYCLOAK_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin
+                  key: username
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin
+                  key: password
+            - name: KEYCLOAK_DATABASE_VENDOR
+              value: "postgres"
+            - name: KEYCLOAK_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: hostname
+            - name: KEYCLOAK_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: database
+            - name: KEYCLOAK_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: username
+            - name: KEYCLOAK_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: password
+            - name: KEYCLOAK_DATABASE_SCHEMA
+              value: "keycloak"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  selector:
+    app: keycloak
+  ports:
+    - name: http
+      port: 80

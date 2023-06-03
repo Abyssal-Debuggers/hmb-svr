@@ -44,6 +44,12 @@ jobs:
           elif [[ "${{ inputs.type }}" == "manual" ]]; then
             sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svr:${{ inputs.version }}/' ./.k8s/deploy.yml
           fi
-          sed -i 's/{{DB_PASSWORD}}/${{ secrets.DB_PASSWORD }}/' ./.k8s/deploy.yml
+          
+          sed -i 's/{{POSTGRES_HOSTNAME}}/${{ env.POSTGRES_HOSTNAME }}/' ./.k8s/deploy.yml
+          sed -i 's/{{POSTGRES_DATABASE}}/${{ env.POSTGRES_DATABASE }}/' ./.k8s/deploy.yml
+          sed -i 's/{{POSTGRES_USERNAME}}/${{ secrets.POSTGRES_USERNAME }}/' ./.k8s/deploy.yml
+          sed -i 's/{{POSTGRES_PASSWORD}}/${{ secrets.POSTGRES_PASSWORD }}/' ./.k8s/deploy.yml
+          sed -i 's/{{KEYCLOAK_ADMIN_USERNAME}}/${{ secrets.KEYCLOAK_ADMIN_USERNAME }}/' ./.k8s/deploy.yml
+          sed -i 's/{{KEYCLOAK_ADMIN_PASSWORD}}/${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}/' ./.k8s/deploy.yml
           
           kubectl apply -f ./.k8s/deploy.yml
