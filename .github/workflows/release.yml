@@ -89,6 +89,7 @@ jobs:
           echo "$major.$minor.$patch"  >> "$GITHUB_OUTPUT"
           echo "$major.$minor"         >> "$GITHUB_OUTPUT"
           echo "$major"                >> "$GITHUB_OUTPUT"
+          echo "latest"                >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
       - name: Log
         run: |
