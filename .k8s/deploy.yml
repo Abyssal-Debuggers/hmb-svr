@@ -13,7 +13,13 @@ spec:
     spec:
       containers:
         - name: hmb-svr
-          image: {{IMAGE}}
+
+          image: "{{IMAGE}}"
+          env:
+            - name: DATABASE_OPTION
+              value: "postgres://postgres:{{DB_PASSWORD}}@hmb-db.svc/postgres"
+            - name: SERVER_PORT
+              value: "80"
           resources:
             requests:
               memory: "64Mi"

@@ -44,4 +44,5 @@ jobs:
           elif [[ "${{ inputs.type }}" == "manual" ]]; then
             sed -i 's/{{IMAGE}}/"${{ inputs.version }}"/' ./.k8s/deploy.yml
           fi
+          sed -i 's/{{DB_PASSWORD}}/"${{ secrets.DB_PASSWORD }}"/' ./.k8s/deploy.yml
           kubectl apply -f ./.k8s/deploy.yml
