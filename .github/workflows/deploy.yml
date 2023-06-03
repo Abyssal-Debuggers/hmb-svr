@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        required: true
+        default: next-patch
+        description: "Versioning type"
+        options:
+          - "latest"
+          - "manual"
+      version:
+        type: string
+        required: false
+        description: "Version to set"
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  gke_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0.4.0"
+        with:
+          workload_identity_provider: ${{ secrets.GKE_WORKLOAD_IDENTITY_PROVIDER}}
+          service_account: ${{ secrets.GKE_SERVICE_ACCOUNT }}
+      - name: GKE setup
+        uses: google-github-actions/get-gke-credentials@v0.4.0
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_LOCATION }}
+      - name: Kubernetest Apply
+        run: |
+          if [[ "${{ inputs.type }}" == "latest" ]]; then
+            sed -i 's/{{IMAGE}}/"latest"/' ./.k8s/deploy.yml
+          elif [[ "${{ inputs.type }}" == "manual" ]]; then
+            sed -i 's/{{IMAGE}}/"${{ inputs.version }}"/' ./.k8s/deploy.yml
+          fi
+          kubectl apply -f ./.k8s/deploy.yml

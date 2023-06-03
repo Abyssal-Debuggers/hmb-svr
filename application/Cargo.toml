@@ -1,0 +1,16 @@
+[package]
+name = "application"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+entity = { path = "../entity" }
+graph = { path = "../graph" }
+tokio = { version = "1.28.2", features = ["full"] }
+axum = { version = "0.6.18", features = ["headers"] }
+async-graphql-axum = "5.0.9"
+serde = { version = "1", features = ["derive"] }
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+tracing = { version = "0.1.37" }
