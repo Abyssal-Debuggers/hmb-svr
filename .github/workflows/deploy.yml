@@ -40,9 +40,9 @@ jobs:
       - name: Kubernetest Apply
         run: |
           if [[ "${{ inputs.type }}" == "latest" ]]; then
-            sed -i 's/{{IMAGE}}/latest/' ./.k8s/deploy.yml
+            sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svc\/latest/' ./.k8s/deploy.yml
           elif [[ "${{ inputs.type }}" == "manual" ]]; then
-            sed -i 's/{{IMAGE}}/${{ inputs.version }}/' ./.k8s/deploy.yml
+            sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svc\/${{ inputs.version }}/' ./.k8s/deploy.yml
           fi
           sed -i 's/{{DB_PASSWORD}}/${{ secrets.DB_PASSWORD }}/' ./.k8s/deploy.yml
           

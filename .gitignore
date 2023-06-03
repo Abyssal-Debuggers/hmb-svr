@@ -16,5 +16,5 @@
 
 # Added by cargo
 /target
-/Dockerfile
+/Dockerfile*
 
