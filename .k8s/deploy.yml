@@ -17,7 +17,7 @@ spec:
           image: "{{IMAGE}}"
           env:
             - name: DATABASE_OPTION
-              value: "postgres://postgres:{{DB_PASSWORD}}@hmb-db.svc/postgres"
+              value: "postgres://postgres:{{DB_PASSWORD}}@hmb-db/postgres"
             - name: SERVER_PORT
               value: "80"
           resources:
@@ -28,7 +28,7 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - containerPort: 5432
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
