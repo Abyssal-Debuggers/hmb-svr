@@ -59,4 +59,6 @@ jobs:
           sed -i "s/{{KEYCLOAK_ADMIN_USERNAME}}/$KEYCLOAK_ADMIN_USERNAME/" ./.k8s/deploy.yml
           sed -i "s/{{KEYCLOAK_ADMIN_PASSWORD}}/$KEYCLOAK_ADMIN_PASSWORD/" ./.k8s/deploy.yml
           
+          cat ./.k8s/deploy.yml
+          
           kubectl apply -f ./.k8s/deploy.yml
