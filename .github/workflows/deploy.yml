@@ -45,7 +45,7 @@ jobs:
             sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svr:${{ inputs.version }}/' ./.k8s/deploy.yml
           fi
           
-          POSTGRES_URL=$(echo 'postgres://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOSTNAME }}/${{ env.POSTGRES_DATABASE }}' | base64)
+          POSTGRES_URL=$(echo 'postgres://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOSTNAME }}/${{ vars.POSTGRES_DATABASE }}' | base64)
           POSTGRES_HOSTNAME=$(echo '${{ vars.POSTGRES_HOSTNAME }}' | base64)
           POSTGRES_DATABASE=$(echo '${{ vars.POSTGRES_DATABASE }}' | base64 )
           POSTGRES_USERNAME=$(echo '${{ secrets.POSTGRES_USERNAME }}' | base64)
