@@ -1,34 +1,48 @@
 use std::ops::{Deref, DerefMut};
 use std::sync::Arc;
 
-use async_graphql::{EmptyMutation, EmptySubscription};
+use async_graphql::{EmptySubscription, Request, Response};
 use async_graphql::dataloader::DataLoader;
-use delegate::delegate;
+use sqlx::PgPool;
 
-use entity::prelude::{DbConn, DbErr};
-use entity::prelude::sea_orm::{ConnectOptions, Database};
+use auth::keycloak_api::KeycloakAPI;
+use auth::prelude::keycloak::KeycloakAdmin;
 
+use crate::extension::pg_manager::PgManagerExtension;
 use crate::loader::{ContentsLoader, StoryLoader, TagsLoader};
-use crate::schema::Query;
+use crate::schema::{Mutation, Query};
 
 #[derive(Clone)]
-pub struct Schema(async_graphql::Schema<Query, EmptyMutation, EmptySubscription>);
+pub struct Schema(async_graphql::Schema<Query, Mutation, EmptySubscription>);
 
-impl From<DbConn> for Schema {
-    fn from(value: DbConn) -> Self {
-        Self(
-            async_graphql::Schema::build(Query, EmptyMutation, EmptySubscription)
-                .data(DataLoader::new(StoryLoader(value.clone()), tokio::spawn))
-                .data(DataLoader::new(ContentsLoader(value.clone()), tokio::spawn))
-                .data(DataLoader::new(TagsLoader(value.clone()), tokio::spawn))
-                .data(value)
-                .finish()
-        )
+pub struct SchemaOption {
+    pub db: PgPool,
+    pub keycloak: KeycloakAPI,
+    pub keycloak_option: KeycloakOption,
+}
+
+pub struct KeycloakOption {
+    pub realm: String,
+}
+
+impl From<SchemaOption> for Schema {
+    fn from(value: SchemaOption) -> Self {
+        let schema = async_graphql::Schema::build(Query, Mutation, EmptySubscription)
+            .data(DataLoader::new(StoryLoader(value.db.clone()), tokio::spawn))
+            .data(DataLoader::new(ContentsLoader(value.db.clone()), tokio::spawn))
+            .data(DataLoader::new(TagsLoader(value.db.clone()), tokio::spawn))
+            .data(value.db.clone())
+            .data(value.keycloak)
+            .data(value.keycloak_option)
+            .extension(PgManagerExtension(value.db))
+            .finish();
+        // schema;
+        Self(schema)
     }
 }
 
 impl Deref for Schema {
-    type Target = async_graphql::Schema<Query, EmptyMutation, EmptySubscription>;
+    type Target = async_graphql::Schema<Query, Mutation, EmptySubscription>;
 
     fn deref(&self) -> &Self::Target {
         &self.0

@@ -1,0 +1,18 @@
+{
+  "server": {
+    "port": 80
+  },
+  "database": {
+    "hostname": "postgres",
+    "port": "5432",
+    "username": "",
+    "password": "",
+    "database": "postgres"
+  },
+  "keycloak": {
+    "url": "http://localhost:8080/",
+    "realm": "hmb-auth",
+    "username": "",
+    "password": ""
+  }
+}

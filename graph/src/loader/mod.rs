@@ -4,6 +4,5 @@ pub use tag::*;
 
 mod story;
 mod content;
-mod error;
 mod tag;
 

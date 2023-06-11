@@ -6,11 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-entity = { path = "../entity" }
-async-graphql = { version = "5.0.9", features = ["tracing", "uuid", "url", "dataloader", "graphiql", "chrono"] }
+auth = { path = "../auth" }
+sqlx = { version = "0.6.3", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "offline", "json"] }
+async-graphql = { version = "5.0.9", features = ["tracing", "uuid", "url", "dataloader", "graphiql", "chrono", "dynamic-schema"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.0" }
 itertools = "0.10.5"
 delegate = "0.9.0"
 tokio = { version = "1.28.2", features = ["full"] }
+regex = "1"
+dotenv = "0.15.0"
+chrono = { version = "0.4.26", features = ["serde"] }

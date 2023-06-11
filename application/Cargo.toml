@@ -6,11 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-entity = { path = "../entity" }
 graph = { path = "../graph" }
+auth = { path = "../auth" }
 tokio = { version = "1.28.2", features = ["full"] }
 axum = { version = "0.6.18", features = ["headers"] }
 async-graphql-axum = "5.0.9"
 serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
 tracing = { version = "0.1.37" }
+clap = { version = "4.3.2", features = ["derive"] }

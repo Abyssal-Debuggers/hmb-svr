@@ -32,37 +32,44 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GKE_WORKLOAD_IDENTITY_PROVIDER}}
           service_account: ${{ secrets.GKE_SERVICE_ACCOUNT }}
-      - name: GKE setup
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Setup GKE
         uses: google-github-actions/get-gke-credentials@v0.4.0
         with:
           cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
           location: ${{ secrets.GKE_LOCATION }}
-      - name: Kubernetest Apply
+      - name: Let Image-Version
+        id: image_version
         run: |
           if [[ "${{ inputs.type }}" == "latest" ]]; then
-            sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svr:latest/' ./.k8s/deploy.yml
+            echo "version=ghcr.io/abyssal-debuggers/hmb-svr:latest" >> "$GITHUB_OUTPUT"
           elif [[ "${{ inputs.type }}" == "manual" ]]; then
-            sed -i 's/{{IMAGE}}/ghcr.io\/abyssal-debuggers\/hmb-svr:${{ inputs.version }}/' ./.k8s/deploy.yml
+            echo "version=ghcr.io/abyssal-debuggers/hmb-svr:${{ inputs.version }}" >> "$GITHUB_OUTPUT"
           fi
+      - name: Setup Backend configuration
+        run: |
+          echo 'conn_str = "${{ secret.BACKEND_CONN_STR }}"'                          >> ./backend.conf
+          echo 'schema_name = "${{ secret.BACKEND_SCHEMA_NAME }}"'                    >> ./backend.conf
+      - name: Setup Terraform variables
+        run: |
+          echo "kubernetes_config_context = \"$(kubectl config current-context)\""    >> ./config.tfvars
           
-          POSTGRES_URL=$(echo -n 'postgres://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOSTNAME }}/${{ vars.POSTGRES_DATABASE }}' | base64)
-          POSTGRES_HOSTNAME=$(echo -n '${{ vars.POSTGRES_HOSTNAME }}' | base64)
-          POSTGRES_DATABASE=$(echo -n '${{ vars.POSTGRES_DATABASE }}' | base64)
-          POSTGRES_USERNAME=$(echo -n '${{ secrets.POSTGRES_USERNAME }}' | base64)
-          POSTGRES_PASSWORD=$(echo -n '${{ secrets.POSTGRES_PASSWORD }}' | base64)
+          echo 'keycloak_admin_username = "${{ secrets.KEYCLOAK_ADMIN_USERNAME }}"'   >> ./config.tfvars
+          echo 'keycloak_admin_password = "${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}"'   >> ./config.tfvars
           
-          KEYCLOAK_ADMIN_USERNAME=$(echo -n '${{ secrets.KEYCLOAK_ADMIN_USERNAME }}' | base64)
-          KEYCLOAK_ADMIN_PASSWORD=$(echo -n '${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}' | base64)
+          echo 'postgres_host = "${{vars.POSTGRES_HOST}}"'                            >> ./config.tfvars
+          echo 'postgres_port = "${{vars.POSTGRES_PORT}}"'                            >> ./config.tfvars
+          echo 'postgres_database = "${{ vars.POSTGRES_DATABASE }}"'                  >> ./config.tfvars
+          echo 'postgres_username = "${{ secrets.POSTGRES_USERNAME }}"'               >> ./config.tfvars
+          echo 'postgres_password = "${{ secrets.POSTGRES_PASSWORD }}"'               >> ./config.tfvars
           
-          sed -i "s/{{POSTGRES_URL}}/$POSTGRES_URL/" ./.k8s/deploy.yml
-          sed -i "s/{{POSTGRES_HOSTNAME}}/$POSTGRES_HOSTNAME/" ./.k8s/deploy.yml
-          sed -i "s/{{POSTGRES_DATABASE}}/$POSTGRES_DATABASE/" ./.k8s/deploy.yml
-          sed -i "s/{{POSTGRES_USERNAME}}/$POSTGRES_USERNAME/" ./.k8s/deploy.yml
-          sed -i "s/{{POSTGRES_PASSWORD}}/$POSTGRES_PASSWORD/" ./.k8s/deploy.yml
+          echo 'graphql_image = "${{ steps.image_version.outputs.version }}"'         >> ./config.tfvars
           
-          sed -i "s/{{KEYCLOAK_ADMIN_USERNAME}}/$KEYCLOAK_ADMIN_USERNAME/" ./.k8s/deploy.yml
-          sed -i "s/{{KEYCLOAK_ADMIN_PASSWORD}}/$KEYCLOAK_ADMIN_PASSWORD/" ./.k8s/deploy.yml
-          
-          cat ./.k8s/deploy.yml
-          
+          echo 'gke_setup = true'                                                     >> ./config.tfvars
+      - name: Kubernetest Apply
+        run: |
+          cd .deploy
+          terraform init -backend-config=../backend.conf
+          terraform apply -var-file ../config.tfvars
           kubectl apply -f ./.k8s/deploy.yml

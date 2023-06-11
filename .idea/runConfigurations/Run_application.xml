@@ -9,10 +9,7 @@
     <option name="withSudo" value="false" />
     <option name="buildTarget" value="REMOTE" />
     <option name="backtrace" value="SHORT" />
-    <envs>
-      <env name="DATABASE_OPTION" value="postgres://postgres:1q2w3e4r!@localhost/postgres" />
-      <env name="SERVER_PORT" value="80" />
-    </envs>
+    <envs />
     <option name="isRedirectInput" value="false" />
     <option name="redirectInputPath" value="" />
     <method v="2">

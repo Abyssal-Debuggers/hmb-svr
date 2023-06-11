@@ -1,0 +1,232 @@
+{
+  "db": "PostgreSQL",
+  "08d9a660364723262408abe3d721a2a26bf2329600cad1ac295bc8d001376170": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "insert into hmb.story_tag(story_id, tag) values ($1, $2)"
+  },
+  "0d362fb0e06272a33dbfc4d01b68d2af3f248001093b3710b8dca2baa4643170": {
+    "describe": {
+      "columns": [
+        {
+          "name": "story_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "seq_no",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "raw",
+          "ordinal": 2,
+          "type_info": "Jsonb"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "UuidArray"
+        ]
+      }
+    },
+    "query": "select * from hmb.content where story_id = any($1)"
+  },
+  "6d0ea89bbbf0bc7bcad7db508416b3504e09390721ce95339f9107877fd6c09f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "delete from hmb.story_tag where story_id = $1 and tag = $2"
+  },
+  "758dc95d7214d27fe195b6f544501549043c7c8a80c017be930775a055f1a587": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "insert into hmb.tag(tag) values ($1)"
+  },
+  "77d24087a949a3e49720acb4873c451e0d44b146dcd53453ad6196cc3ee9b477": {
+    "describe": {
+      "columns": [
+        {
+          "name": "has_prev",
+          "ordinal": 0,
+          "type_info": "Bool"
+        },
+        {
+          "name": "has_next",
+          "ordinal": 1,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n                        select exists(select 1 as _i from hmb.story where story_id < $1 order by story_id limit 1) as has_prev\n                             , exists(select 1 as _i from hmb.story where story_id > $2 order by story_id limit 1) as has_next\n                        "
+  },
+  "7f9a7e3a818041479dcbac21788b4ad75e08ffd1cadbb8cc7b20e742b1550dd4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "story_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "tag",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "UuidArray"
+        ]
+      }
+    },
+    "query": "select * from hmb.story_tag where story_id = any($1)"
+  },
+  "8f29e0779a1a3679b9ad7ee801addd02fb8565add5dd4aa59a46651e60cc72df": {
+    "describe": {
+      "columns": [
+        {
+          "name": "_t",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "select 1 as _t from hmb.story_tag where story_id = $1 and tag = $2"
+  },
+  "afb563457245d6fd13de33aa23f79997b210298adcbac37765c8f4f239826e10": {
+    "describe": {
+      "columns": [
+        {
+          "name": "story_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "post_at",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Int8"
+        ]
+      }
+    },
+    "query": "select * from hmb.story where coalesce(story_id > $1, true) order by story_id limit $2"
+  },
+  "b76018711cd73987250e5f469cb845aa2ee6ece3b85ddd25dcc541fd5821eb1f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "tag",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "select * from hmb.tag where tag = $1"
+  },
+  "d8997e8923cb7bc2f85bc07a37ef500338ccc571da5428ee72c4d8771d704f99": {
+    "describe": {
+      "columns": [
+        {
+          "name": "story_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "post_at",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "UuidArray"
+        ]
+      }
+    },
+    "query": "select story_id, title, post_at from hmb.story where story_id = any($1)"
+  }
+}
