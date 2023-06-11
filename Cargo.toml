@@ -5,3 +5,7 @@ members = [
     "application",
     "auth"
 ]
+
+
+[patch.crates-io]
+keycloak = { git = "https://github.com/egoavara/keycloak.git" }

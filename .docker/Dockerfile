@@ -32,9 +32,11 @@ COPY . .
 #COPY --from=cacher $CARGO_HOME $CARGO_HOME
 
 RUN apt update && \
-    apt install musl-tools -y && \
+    apt install -y \
+      musl-tools \
+      && \
     rustup target add x86_64-unknown-linux-musl
-
+ENV SQLX_OFFLINE=true
 RUN cargo build --release --target=x86_64-unknown-linux-musl
 
 FROM alpine:3.17

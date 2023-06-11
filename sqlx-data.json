@@ -13,6 +13,19 @@
     },
     "query": "insert into hmb.story_tag(story_id, tag) values ($1, $2)"
   },
+  "0a367d1a71e69e2ebca1532d9c497e24f057f361c05bc71fb1ae60ee125d2c45": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            with temp as (\n                select story_id, seq_no from hmb.content\n                where story_id = $1 and seq_no >= $2\n                order by story_id desc, seq_no desc\n            )\n            update hmb.content c\n            set seq_no = c.seq_no + 1\n            from temp t\n            where c.story_id = t.story_id and c.seq_no = t.seq_no\n            "
+  },
   "0d362fb0e06272a33dbfc4d01b68d2af3f248001093b3710b8dca2baa4643170": {
     "describe": {
       "columns": [
@@ -44,6 +57,33 @@
       }
     },
     "query": "select * from hmb.content where story_id = any($1)"
+  },
+  "27fe3f3e87a7e66d664c7fe77822219362760283ad899b0e9df7794be60acaf2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Timestamptz",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "update hmb.story set title = coalesce($1, title), post_at = coalesce($2, post_at) where story_id = $3"
+  },
+  "5b7e74683af029ba18bc45ca7d74fa4acf545c09aac714d4cc38e403753e6ee2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Int4"
+        ]
+      }
+    },
+    "query": "delete from hmb.content where story_id = $1 and seq_no = $2"
   },
   "6d0ea89bbbf0bc7bcad7db508416b3504e09390721ce95339f9107877fd6c09f": {
     "describe": {
@@ -144,6 +184,26 @@
     },
     "query": "select 1 as _t from hmb.story_tag where story_id = $1 and tag = $2"
   },
+  "99b76289bd2bf3646edd165d265d6655913f40a3dc11c54e29fac08a752c28d4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "max",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "select max(seq_no) as max from hmb.content where story_id = $1"
+  },
   "afb563457245d6fd13de33aa23f79997b210298adcbac37765c8f4f239826e10": {
     "describe": {
       "columns": [
@@ -197,6 +257,38 @@
     },
     "query": "select * from hmb.tag where tag = $1"
   },
+  "d494ad129626dcedf666fb35a0a179cda2203765e3190cef19a7f40006c043d7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "story_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "seq_no",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "raw",
+          "ordinal": 2,
+          "type_info": "Jsonb"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "select * from hmb.content where story_id = $1"
+  },
   "d8997e8923cb7bc2f85bc07a37ef500338ccc571da5428ee72c4d8771d704f99": {
     "describe": {
       "columns": [
@@ -228,5 +320,19 @@
       }
     },
     "query": "select story_id, title, post_at from hmb.story where story_id = any($1)"
+  },
+  "d8d13ee58baa596c4f0cb3b52ea38ea0f189bc2ba2b82242ebe885ce0502e82d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Int4",
+          "Jsonb"
+        ]
+      }
+    },
+    "query": "insert into hmb.content(story_id, seq_no, raw) values($1, $2, $3)"
   }
 }

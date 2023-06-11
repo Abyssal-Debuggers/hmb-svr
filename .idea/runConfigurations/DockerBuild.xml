@@ -25,7 +25,6 @@
             </DockerPortBindingImpl>
           </list>
         </option>
-        <option name="commandLineOptions" value="" />
         <option name="sourceFilePath" value=".docker/Dockerfile" />
       </settings>
     </deployment>
