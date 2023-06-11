@@ -5,13 +5,13 @@
       <map />
     </option>
     <option name="passParentEnvs" value="true" />
-    <option name="programParameters" value="init --backend-config=../backend.conf" />
+    <option name="programParameters" value="init" />
     <option name="projectPathOnTarget" />
     <option name="selectedOptions">
       <list />
     </option>
     <option name="workingDirectory" value="C:\Users\egoav\OneDrive\Documents\Git-AD\hmb-svr\.deploy" />
-    <option name="PROGRAM_PARAMETERS" value="init --backend-config=../backend.conf" />
+    <option name="PROGRAM_PARAMETERS" value="init" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/.deploy" />
     <option name="PASS_PARENT_ENVS" value="true" />
     <method v="2" />

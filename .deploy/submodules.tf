@@ -40,9 +40,9 @@ module "gke-setup" {
     module.graphgl.namespace
   ]
   domains = [
-    "graphgl-app.hmbgaq.org",
+    "auth.hmbgaq.org",
+    "graphgl.hmbgaq.org",
     "api.hmbgaq.org",
     "www.hmbgaq.org",
-    "bible.hmbgaq.org",
   ]
 }

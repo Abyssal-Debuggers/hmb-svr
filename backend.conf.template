@@ -1,3 +1,0 @@
-conn_str = "host=localhost port=5432 user=postgres pass=1q2w3e4r! dbname=postgres sslmode=disable"
-
-
