@@ -1,1 +1,17 @@
 kubernetes_config_context = "<your kubernetes context here>"
+
+kubernetes_config_path    = "<your kubernetes config file here>"
+kubernetes_config_context = "<your kubernetes context here>"
+
+keycloak_admin_username = "keycloak"
+keycloak_admin_password = ""
+
+postgres_host     = "www.pghost.com"
+postgres_port     = "5432"
+postgres_database = "postgres"
+postgres_username = "postgres"
+# postgres_password = ""
+
+graphql_image = "ghcr.io/abyssal-debuggers/hmb-svr:0.0.4"
+
+gke_setup = true
