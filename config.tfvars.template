@@ -7,7 +7,7 @@ keycloak_admin_username = "keycloak"
 keycloak_admin_password = ""
 
 postgres_host     = "www.pghost.com"
-postgres_port     = "5432"
+postgres_port     = 5432
 postgres_database = "postgres"
 postgres_username = "postgres"
 # postgres_password = ""

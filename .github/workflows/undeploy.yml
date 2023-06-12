@@ -1,0 +1,36 @@
+on:
+  schedule:
+    - cron: "0 2 * * 1-5" # 평일 새벽 2시
+    - cron: "0 3 * * 0,6" # 주말 새벽 3시
+  workflow_dispatch:
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  gke_undeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: ${{ secrets.GKE_WORKLOAD_IDENTITY_PROVIDER}}
+          service_account: ${{ secrets.GKE_SERVICE_ACCOUNT }}
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v2
+      - name: "Setup GKE"
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_LOCATION }}
+      - name: "Terraform Destroy"
+        run: |
+          # 
+          cd .deploy
+          #          
+          terraform init
+          terraform destroy -auto-approve

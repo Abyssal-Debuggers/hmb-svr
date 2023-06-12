@@ -1,13 +1,9 @@
-locals {
-  keycloak_port_forward = "50000"
-}
-
 provider "null" {}
 
 provider "google" {
-  project = "practice-make-perfect-379914"
-  region  = "asia-northeast3"
-  zone    = "asia-northeast3-a"
+  project = var.gcp_project
+  region  = var.gcp_region
+  zone    = var.gcp_zone
 }
 
 provider "kubernetes" {

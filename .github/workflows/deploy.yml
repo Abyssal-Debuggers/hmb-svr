@@ -1,12 +1,15 @@
 name: Deploy
 
 on:
+  schedule:
+    - cron: "0 16 * * 1-5" # 평일 저녁 4시
+    - cron: "0 10 * * 0,6" # 주말 아침 10시
   workflow_dispatch:
     inputs:
       type:
         type: choice
         required: true
-        default: next-patch
+        default: latest
         description: "Versioning type"
         options:
           - "latest"
@@ -49,6 +52,10 @@ jobs:
           fi
       - name: "Setup Terraform variables"
         run: |
+          echo 'gcp_project = "${{ secrets.GCP_PROJECT }}"'                           >> ./config.tfvars
+          echo 'gcp_region = "${{ vars.GCP_REGION }}"'                                >> ./config.tfvars
+          echo 'gcp_zone = "${{ vars.GCP_ZONE }}"'                                    >> ./config.tfvars
+
           echo "kubernetes_config_path = \"$KUBECONFIG\""                             >> ./config.tfvars
           echo "kubernetes_config_context = \"$(kubectl config current-context)\""    >> ./config.tfvars
           
@@ -69,8 +76,6 @@ jobs:
         run: |
           # 
           cd .deploy
-          # print for debug
-          cat ../config.tfvars
           #          
           terraform init
           terraform apply -var-file ../config.tfvars -auto-approve
