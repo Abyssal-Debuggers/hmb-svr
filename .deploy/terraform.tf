@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket = "abyssal-debugger-terraform"
-    prefix = "terraform"
+    prefix = "hmb-svr"
   }
   required_providers {
     kubernetes = {
