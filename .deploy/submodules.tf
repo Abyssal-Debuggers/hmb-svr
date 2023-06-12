@@ -30,11 +30,13 @@ module "graphgl" {
   postgres_password = var.postgres_password
 
   graphql_image = var.graphql_image
+
+  managed_certificates_name = module.gke-setup.managed_certificate_name
+  static_ip_name            = var.graphql_static_ip_name
 }
 
 module "gke-setup" {
   source     = "./gke-setup"
-  count      = var.gke_setup ? 1 : 0
   namespaces = [
     module.keycloak.namespace,
     module.graphgl.namespace

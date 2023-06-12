@@ -1,3 +1,6 @@
+locals {
+  name = "hmb-ssl"
+}
 resource "kubernetes_manifest" "managed_certificate" {
   for_each = toset(var.namespaces)
 

@@ -56,10 +56,11 @@ resource "kubernetes_deployment" "graphql" {
       }
       spec {
         container {
-          name  = "server"
-          image = var.graphql_image
+          name    = "server"
+          image   = var.graphql_image
+          command = ["/usr/app/application", "--config", "/usr/config/config.json"]
           volume_mount {
-            mount_path = "/usr/app"
+            mount_path = "/usr/config"
             name       = "config"
             read_only  = true
           }
@@ -86,6 +87,81 @@ resource "kubernetes_deployment" "graphql" {
           }
         }
       }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      spec[0].template[0].spec[0].container[0].resources[0].requests,
+      spec[0].template[0].spec[0].container[0].resources[0].limits,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].toleration,
+    ]
+  }
+}
+
+
+resource "kubernetes_service" "graphql" {
+  metadata {
+    name      = "graphql"
+    namespace = kubernetes_namespace.graphql.metadata[0].name
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.graphql.spec[0].template[0].metadata[0].labels.app
+    }
+    port {
+      port = kubernetes_deployment.graphql.spec[0].template[0].spec[0].container[0].port[0].container_port
+      name = kubernetes_deployment.graphql.spec[0].template[0].spec[0].container[0].port[0].name
+    }
+  }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg"],
+      metadata[0].annotations["cloud.google.com/neg-status"],
+    ]
+  }
+}
+
+
+resource "kubernetes_manifest" "graphql-ingress" {
+  manifest = {
+    apiVersion = "networking.k8s.io/v1"
+    kind       = "Ingress"
+    metadata   = {
+      name        = "graphql-ingress"
+      namespace   = kubernetes_namespace.graphql.metadata[0].name
+      annotations = {
+        "kubernetes.io/ingress.class"                 = "gce"
+        "kubernetes.io/ingress.allow-http"            = "true"
+        "kubernetes.io/ingress.global-static-ip-name" = var.static_ip_name
+        "networking.gke.io/managed-certificates"      = var.managed_certificates_name
+      }
+    }
+    spec = {
+      rules = [
+        {
+          host = "graph.hmbgaq.org"
+          http = {
+            paths = [
+              {
+                path     = "/"
+                pathType = "Prefix"
+                backend  = {
+                  service = {
+                    name = kubernetes_service.graphql.metadata[0].name
+                    port = {
+                      number = kubernetes_service.graphql.spec[0].port[0].port
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

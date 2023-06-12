@@ -20,7 +20,7 @@ variable "postgres_host" {
 }
 
 variable "postgres_port" {
-  type = string
+  type = number
 }
 
 variable "postgres_username" {
@@ -38,7 +38,5 @@ variable "postgres_database" {
 variable "graphql_image" {
   type = string
 }
-variable "gke_setup" {
-  type    = bool
-  default = false
-}
+
+variable "graphql_static_ip_name" { type = string }

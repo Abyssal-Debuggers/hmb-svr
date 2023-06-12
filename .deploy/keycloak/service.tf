@@ -119,6 +119,16 @@ resource "kubernetes_deployment" "keycloak" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      spec[0].template[0].spec[0].container[0].resources[0].requests,
+      spec[0].template[0].spec[0].container[0].resources[0].limits,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].toleration,
+    ]
+  }
 }
 
 resource "kubernetes_service" "keycloak" {
@@ -138,6 +148,11 @@ resource "kubernetes_service" "keycloak" {
       port        = "80"
       target_port = "8080"
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg"],
+    ]
   }
 }
 
