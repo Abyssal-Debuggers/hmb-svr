@@ -35,7 +35,8 @@ jobs:
       - name: "Setup Terraform"
         uses: hashicorp/setup-terraform@v2
       - name: "Setup GKE"
-        uses: google-github-actions/get-gke-credentials@v0.4.0
+        id: "setup_gke"
+        uses: google-github-actions/get-gke-credentials@v1
         with:
           cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
           location: ${{ secrets.GKE_LOCATION }}
@@ -49,6 +50,7 @@ jobs:
           fi
       - name: "Setup Terraform variables"
         run: |
+          echo 'kubernetes_config_path = "${{ steps.setup_gke.outputs.kubeconfig_path }}"'    >> ./config.tfvars
           echo "kubernetes_config_context = \"$(kubectl config current-context)\""    >> ./config.tfvars
           
           echo 'keycloak_admin_username = "${{ secrets.KEYCLOAK_ADMIN_USERNAME }}"'   >> ./config.tfvars
@@ -63,8 +65,7 @@ jobs:
           echo 'graphql_image = "${{ steps.image_version.outputs.version }}"'         >> ./config.tfvars
           
           echo 'graphql_static_ip_name = "${{ secrets.GRAPHQL_STATIC_IP_NAME }}"'     >> ./config.tfvars
-          
-          echo 'gke_setup = true'                                                     >> ./config.tfvars
+
       - name: "Terraform Apply"
         run: |
           # 
