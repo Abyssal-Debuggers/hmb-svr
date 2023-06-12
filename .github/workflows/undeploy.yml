@@ -1,9 +1,9 @@
 name: Undeploy
 
 on:
-  schedule:
-    - cron: "0 2 * * 1-5" # 평일 새벽 2시
-    - cron: "0 3 * * 0,6" # 주말 새벽 3시
+  #  schedule:
+  #    - cron: "0 2 * * 1-5" # 평일 새벽 2시
+  #    - cron: "0 3 * * 0,6" # 주말 새벽 3시
   workflow_dispatch:
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
