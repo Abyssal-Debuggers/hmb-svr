@@ -45,10 +45,10 @@ jobs:
       - name: "Let Image-Version"
         id: image_version
         run: |
-          if [[ "${{ inputs.type }}" == "latest" ]]; then
-            echo "version=ghcr.io/abyssal-debuggers/hmb-svr:latest" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ inputs.type }}" == "manual" ]]; then
+          if [[ "${{ inputs.type }}" == "manual" ]]; then
             echo "version=ghcr.io/abyssal-debuggers/hmb-svr:${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=ghcr.io/abyssal-debuggers/hmb-svr:latest" >> "$GITHUB_OUTPUT"
           fi
       - name: "Setup Terraform variables"
         run: |
