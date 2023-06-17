@@ -1,12 +1,13 @@
 use std::collections::HashMap;
 
-use async_graphql::Object;
+use async_graphql::{Context, Object};
 use chrono::{DateTime, NaiveDateTime, Utc};
 use serde_json::Value;
 
 use auth::prelude::keycloak::types::UserRepresentation;
 
 use crate::types::{Credential, FederatedIdentity, UserConsent};
+use crate::types::token::{RefreshToken, Token};
 
 pub struct User(UserRepresentation);
 
@@ -35,6 +36,12 @@ impl User {
     async fn _self(&self) -> Option<String> { self.0.self_.clone() }
     async fn service_account_client_id(&self) -> Option<String> { self.0.service_account_client_id.clone() }
     async fn username(&self) -> Option<String> { self.0.username.clone() }
+    // 특수기능
+    async fn login(
+        &self, ctx: &Context<'_>,
+        #[graphql(desc = "로그인 하기 위한 패스워드입니다.")]
+        password: String,
+    ) -> Token {}
 }
 
 impl From<UserRepresentation> for User { fn from(value: UserRepresentation) -> Self { Self(value) } }

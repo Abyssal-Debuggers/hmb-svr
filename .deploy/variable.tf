@@ -8,6 +8,7 @@ variable "kubernetes_config_path" {
 }
 variable "kubernetes_config_context" { type = string }
 
+variable "keycloak_url" { type = string }
 variable "keycloak_admin_username" { type = string }
 variable "keycloak_admin_password" { type = string }
 

@@ -3,6 +3,8 @@ kubernetes_config_context = "<your kubernetes context here>"
 kubernetes_config_path    = "<your kubernetes config file here>"
 kubernetes_config_context = "<your kubernetes context here>"
 
+keycloak_url = "http://keycloak.keycloak.svc.cluster.local"
+
 keycloak_admin_username = "keycloak"
 keycloak_admin_password = ""
 

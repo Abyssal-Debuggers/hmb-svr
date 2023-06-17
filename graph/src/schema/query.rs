@@ -97,4 +97,19 @@ impl Query {
            .map(|x| User::from(x))
            .unwrap()// TODO : 에러처리가 너무 러프함
     }
+
+
+    async fn find_user_by_name(
+        &self,
+        ctx: &Context<'_>,
+        #[graphql(desc = "해당 ID의 유저정보를 가져옵니다..")]
+        user_id: Uuid,
+    ) -> User {
+        let realm = ctx.data_unchecked::<KeycloakOption>().realm.as_str();
+        ctx.data_unchecked::<KeycloakAPI>()
+           .realm_users_with_id_get(realm, user_id.to_string().as_str())
+           .await
+           .map(|x| User::from(x))
+           .unwrap()// TODO : 에러처리가 너무 러프함
+    }
 }

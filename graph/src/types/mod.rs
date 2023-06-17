@@ -17,13 +17,5 @@ mod credential;
 mod federated_identity;
 mod auth_token;
 mod tag_state;
-
-pub trait ConvertMut {
-    type Mut;
-    fn into_mut(self) -> Self::Mut;
-}
-
-pub trait ConvertUnmut {
-    type Unmut;
-    fn into_mut(self) -> Self::Unmut;
-}
+mod token;
+mod token_role;

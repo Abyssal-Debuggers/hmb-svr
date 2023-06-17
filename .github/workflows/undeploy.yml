@@ -39,6 +39,8 @@ jobs:
           echo 'gcp_region = "${{ vars.GCP_REGION }}"'                                >> ./config.tfvars
           echo 'gcp_zone = "${{ vars.GCP_ZONE }}"'                                    >> ./config.tfvars
 
+          echo 'keycloak_admin_username = "${{ vars.KEYCLOAK_URL }}"'                 >> ./config.tfvars
+          
           echo "kubernetes_config_path = \"$KUBECONFIG\""                             >> ./config.tfvars
           echo "kubernetes_config_context = \"$(kubectl config current-context)\""    >> ./config.tfvars
           
