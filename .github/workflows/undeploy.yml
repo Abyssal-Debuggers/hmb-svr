@@ -2,8 +2,8 @@ name: Undeploy
 
 on:
   schedule:
-    - cron: "0 17 * * 1-5" # UTC -> Asia/Seoul | 평일 새벽 2시
-    - cron: "0 18 * * 0,6" # UTC -> Asia/Seoul | 주말 새벽 3시
+    - cron: "0 14 * * 1-5" # UTC -> Asia/Seoul | 평일 23시
+    - cron: "0 15 * * 0,6" # UTC -> Asia/Seoul | 주말 0시
   workflow_dispatch:
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -40,21 +40,21 @@ jobs:
           echo 'gcp_zone = "${{ vars.GCP_ZONE }}"'                                    >> ./config.tfvars
 
           echo 'keycloak_admin_username = "${{ vars.KEYCLOAK_URL }}"'                 >> ./config.tfvars
-          
+
           echo "kubernetes_config_path = \"$KUBECONFIG\""                             >> ./config.tfvars
           echo "kubernetes_config_context = \"$(kubectl config current-context)\""    >> ./config.tfvars
-          
+
           echo 'keycloak_admin_username = "${{ secrets.KEYCLOAK_ADMIN_USERNAME }}"'   >> ./config.tfvars
           echo 'keycloak_admin_password = "${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}"'   >> ./config.tfvars
-          
+
           echo 'postgres_host = "${{vars.POSTGRES_HOST}}"'                            >> ./config.tfvars
           echo 'postgres_port = ${{vars.POSTGRES_PORT}}'                              >> ./config.tfvars
           echo 'postgres_database = "${{ vars.POSTGRES_DATABASE }}"'                  >> ./config.tfvars
           echo 'postgres_username = "${{ secrets.POSTGRES_USERNAME }}"'               >> ./config.tfvars
           echo 'postgres_password = "${{ secrets.POSTGRES_PASSWORD }}"'               >> ./config.tfvars
-          
+
           echo 'graphql_image = "${{ steps.image_version.outputs.version }}"'         >> ./config.tfvars
-          
+
           echo 'graphql_static_ip_name = "${{ secrets.GRAPHQL_STATIC_IP_NAME }}"'     >> ./config.tfvars
 
       - name: "Terraform Destroy"
