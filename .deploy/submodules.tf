@@ -4,7 +4,7 @@ module "graphgl" {
   server_port = 80
   server_ip   = null
 
-  keycloak_url      = module.keycloak.url
+  keycloak_url      = var.keycloak_url
   keycloak_realm    = "hmb-auth"
   keycloak_username = var.keycloak_admin_username
   keycloak_password = var.keycloak_admin_password
@@ -22,7 +22,7 @@ module "graphgl" {
 }
 
 module "gke-setup" {
-  source     = "./gke-setup"
+  source = "./gke-setup"
   namespaces = [
     module.graphgl.namespace
   ]
